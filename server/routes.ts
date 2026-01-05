@@ -27,15 +27,22 @@ export async function registerRoutes(
       const room = await storage.getRoom(slug);
 
       if (!room) {
-        const newRoom = await storage.createRoom({
-          slug,
-          content: "",
-          isPrivate: false,
-          passwordHash: undefined,
-          expiresAt: undefined,
-          createdIp: req.ip
-        });
-        return res.json(newRoom);
+        try {
+          const newRoom = await storage.createRoom({
+            slug,
+            content: "",
+            isPrivate: false,
+            passwordHash: undefined,
+            expiresAt: undefined,
+            createdIp: req.ip
+          });
+          return res.json(newRoom);
+        } catch (createErr) {
+          // If creation fails (e.g. race condition), try getting it one more time
+          const secondTry = await storage.getRoom(slug);
+          if (secondTry) return res.json(secondTry);
+          throw createErr;
+        }
       }
 
 
