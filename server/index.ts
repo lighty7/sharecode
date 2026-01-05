@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
@@ -5,6 +6,11 @@ import { createServer } from "http";
 
 const app = express();
 const httpServer = createServer(app);
+
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+  throw new Error('DATABASE_URL must be set. Did you forget to provision a database?');
+}
 
 declare module "http" {
   interface IncomingMessage {

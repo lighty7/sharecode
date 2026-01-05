@@ -17,7 +17,6 @@ export const rooms = pgTable("rooms", {
 export const insertRoomSchema = createInsertSchema(rooms).omit({
   createdAt: true,
   lastAccessedAt: true,
-  createdIp: true
 });
 
 export type Room = typeof rooms.$inferSelect;

@@ -27,8 +27,17 @@ export async function registerRoutes(
       const room = await storage.getRoom(slug);
 
       if (!room) {
-        return res.status(404).json({ message: "Room not found" });
+        const newRoom = await storage.createRoom({
+          slug,
+          content: "",
+          isPrivate: false,
+          passwordHash: undefined,
+          expiresAt: undefined,
+          createdIp: req.ip
+        });
+        return res.json(newRoom);
       }
+
 
       // Check access
       if (room.isPrivate) {
@@ -49,12 +58,12 @@ export async function registerRoutes(
 
         const passwordHeader = req.headers['x-room-password'] as string;
         if (!passwordHeader) {
-           return res.status(403).json({ isPrivate: true, message: "Password required" });
+          return res.status(403).json({ isPrivate: true, message: "Password required" });
         }
 
         const isValid = await storage.verifyPassword(passwordHeader, room.passwordHash!);
         if (!isValid) {
-           return res.status(403).json({ isPrivate: true, message: "Invalid password" });
+          return res.status(403).json({ isPrivate: true, message: "Invalid password" });
         }
       }
 
@@ -68,7 +77,7 @@ export async function registerRoutes(
   app.post(api.rooms.create.path, async (req, res) => {
     try {
       const input = api.rooms.create.input.parse(req.body);
-      
+
       let slug = input.slug;
       if (!slug) {
         // Generate unique slug
@@ -83,7 +92,7 @@ export async function registerRoutes(
           attempts++;
         }
         if (!slug) {
-           return res.status(500).json({ message: "Failed to generate unique slug" });
+          return res.status(500).json({ message: "Failed to generate unique slug" });
         }
       } else {
         // Check provided slug
@@ -128,7 +137,7 @@ export async function registerRoutes(
     try {
       const { slug } = req.params;
       const input = api.rooms.update.input.parse(req.body);
-      
+
       const room = await storage.getRoom(slug);
       if (!room) {
         return res.status(404).json({ message: "Room not found" });
@@ -138,28 +147,28 @@ export async function registerRoutes(
       if (room.isPrivate) {
         const password = input.password || (req.headers['x-room-password'] as string);
         if (!password) {
-           return res.status(403).json({ message: "Password required" });
+          return res.status(403).json({ message: "Password required" });
         }
         const isValid = await storage.verifyPassword(password, room.passwordHash!);
         if (!isValid) {
-           return res.status(403).json({ message: "Invalid password" });
+          return res.status(403).json({ message: "Invalid password" });
         }
       }
 
       const updates: any = {};
       if (input.content !== undefined) updates.content = input.content;
-      
+
       // Update lock settings
       if (input.lockPassword) {
-         updates.passwordHash = await storage.hashPassword(input.lockPassword);
-         updates.isPrivate = true;
+        updates.passwordHash = await storage.hashPassword(input.lockPassword);
+        updates.isPrivate = true;
       }
       if (input.isPrivate !== undefined) {
-         // Only allow disabling private mode if authenticated (already checked above)
-         updates.isPrivate = input.isPrivate;
-         if (!input.isPrivate) {
-            updates.passwordHash = null;
-         }
+        // Only allow disabling private mode if authenticated (already checked above)
+        updates.isPrivate = input.isPrivate;
+        if (!input.isPrivate) {
+          updates.passwordHash = null;
+        }
       }
 
       const updatedRoom = await storage.updateRoom(slug, updates);
@@ -180,11 +189,11 @@ export async function registerRoutes(
     try {
       const { slug } = req.params;
       const { password } = api.rooms.verify.input.parse(req.body);
-      
+
       const room = await storage.getRoom(slug);
       if (!room) {
-         // To prevent enumeration, maybe 404 is okay
-         return res.status(404).json({ message: "Room not found" });
+        // To prevent enumeration, maybe 404 is okay
+        return res.status(404).json({ message: "Room not found" });
       }
 
       if (!room.isPrivate) {

@@ -26,15 +26,15 @@ export default function Room() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug || "";
   const [sessionPassword, setSessionPassword] = useState<string | undefined>();
-  
+
   // Data Fetching
   const { data: room, isLoading, error } = useRoom(slug, sessionPassword);
-  
+
   // Local State
   const [content, setContent] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  
+
   // Derived State
   const debouncedContent = useDebounce(content, 1000);
   const isLocked = (room as any)?.isLocked;
@@ -58,12 +58,14 @@ export default function Room() {
     // Don't save if content is empty (initially) or hasn't changed from server
     // Or if we are currently typing (debounce handles the wait)
     // Or if room is not loaded/locked
-    if (!room || isLocked) return;
-    if (content === (room.content || "")) return;
+    // If room is locked, we can't save. But if room is missing (null), we SHOULD save to create it.
+    if (isLocked) return;
+    // content === room.content check needs to handle room being null
+    if (content === (room?.content || "")) return;
 
     const save = async () => {
       try {
-        if (!room.createdAt) {
+        if (!room || !('createdAt' in room)) {
           // If room doesn't exist on server yet (it's new)
           await createRoom.mutateAsync({
             slug,
@@ -134,7 +136,7 @@ export default function Room() {
 
   return (
     <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
-      <PasswordModal 
+      <PasswordModal
         slug={slug}
         isOpen={!!isLocked}
         onSuccess={setSessionPassword}
@@ -168,9 +170,9 @@ export default function Room() {
 
         <div className="flex-1" />
 
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={copyUrl}
           className="h-8 gap-2 text-zinc-400 hover:text-white"
         >
@@ -178,9 +180,9 @@ export default function Room() {
           <span className="hidden sm:inline">Share</span>
         </Button>
 
-        <Button 
-          variant="ghost" 
-          size="sm" 
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={handleDownload}
           className="h-8 gap-2 text-zinc-400 hover:text-white"
         >
@@ -190,10 +192,10 @@ export default function Room() {
 
         <div className="h-4 w-[1px] bg-zinc-800 mx-2" />
 
-        <SettingsModal 
-          slug={slug} 
-          isPrivate={isPrivate} 
-          currentPassword={sessionPassword} 
+        <SettingsModal
+          slug={slug}
+          isPrivate={isPrivate}
+          currentPassword={sessionPassword}
         />
       </CommandBar>
 
