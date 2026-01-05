@@ -1,59 +1,80 @@
-# CodeVault
+# ShareCode
 
-A secure, dark-themed code sharing application.
+ShareCode is a modern, real-time code and text sharing application designed for speed and security. Create instant rooms, share snippets, and protect your content with passwords.
 
-## Prerequisites
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=nodedotjs&logoColor=white)
 
-- Node.js (v20 or higher)
-- PostgreSQL database
+## ✨ Features
 
-## Local Setup
+- **🚀 Instant Room Creation**: Just visit a URL or click "create" to start sharing immediately.
+- **🔒 Secure Sharing**: Password-protect your rooms to keep sensitive content safe.
+- **📝 Rich Editor**: Monaco Editor integration with Markdown support for a premium editing experience.
+- **⚡ Real-time Updates**: changes are saved and synced efficiently.
+- **🎨 Modern UI**: Built with Shadcn UI and Tailwind CSS for a sleek, responsive design.
+- **🛠️ Developer Friendly**: Full TypeScript support across the full stack.
 
-1. **Clone the repository**
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-3. **Environment Variables**
-   Create a `.env` file in the root directory and add your `DATABASE_URL`:
-   ```env
-   DATABASE_URL=postgres://user:password@localhost:5432/codevault
-   ```
-4. **Database Setup**
-   Push the schema to your database:
-   ```bash
-   npm run db:push
-   ```
-5. **Run the application**
-   ```bash
-   npm run dev
-   ```
-   The application will be available at `http://localhost:5000`.
+## 🛠️ Tech Stack
 
-## Deployment
+- **Frontend**: React, Vite, TypeScript, Tailwind CSS, Shadcn UI, Wouter, React Query.
+- **Backend**: Node.js, Express.
+- **Database**: PostgreSQL (via Supabase), Drizzle ORM.
+- **Tooling**: TypeScript, Prettier, PostCSS.
 
-### Backend (Render / Heroku)
+## 🚀 Getting Started
 
-1. **Connect your GitHub repository** to Render.
-2. **Create a Web Service**.
-3. **Environment Variables**: Add `DATABASE_URL` and `NODE_ENV=production`.
-4. **Build Command**: `npm run build`
-5. **Start Command**: `npm run start`
+Follow these steps to get the project running locally.
 
-### Frontend (Netlify / Vercel)
+### Prerequisites
 
-Since this is a full-stack application with a shared backend, it's recommended to deploy the entire app to a platform like Render or Railway. However, if you want to split them:
+- Node.js (v18 or higher)
+- npm or bun
+- A PostgreSQL database (e.g., local or Supabase)
 
-1. **Netlify/Vercel**: Deploy the `client` folder.
-2. **Build Command**: `npm run build`
-3. **Publish Directory**: `dist/public`
-4. **API Proxy**: Configure a proxy or set `VITE_API_URL` to your backend service.
+### Installation
 
-## Recommended Database
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/lighty7/sharecode.git
+    cd sharecode
+    ```
 
-We recommend using **PostgreSQL** (specifically **Neon** or **Supabase** for managed hosting). 
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
 
-- **Neon**: Great for serverless applications and integrates perfectly with Replit.
-- **Supabase**: Offers a full backend suite if you need more than just a database.
+3.  **Environment Setup**
+    Create a `.env` file in the root directory and add your database connection string:
+    ```env
+    DATABASE_URL=postgresql://user:password@host:port/database
+    NODE_ENV=development
+    ```
 
-The app uses **Drizzle ORM**, making it compatible with any PostgreSQL provider.
+4.  **Run Migrations (if applicable)**
+    ```bash
+    npm run db:push
+    ```
+
+5.  **Start the Development Server**
+    ```bash
+    npm run dev
+    ```
+    The application will be available at `http://localhost:5000`.
+
+## 📂 Project Structure
+
+- `client/`: React frontend application.
+- `server/`: Express backend server.
+- `shared/`: Shared types and schemas (Drizzle/Zod).
+- `drizzle.config.ts`: Database configuration.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).

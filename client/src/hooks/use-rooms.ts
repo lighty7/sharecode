@@ -16,18 +16,24 @@ export function useRoom(slug: string, password?: string) {
       // But for the initial GET, we usually expect public data or a 403
       // If we want to support sending password via header for GET, we'd add it here.
       // For now, let's assume GET is public or 403, and verify endpoint is used for check.
-      
+
       const url = buildUrl(api.rooms.get.path, { slug });
-      const res = await fetch(url);
-      
+      const headers: Record<string, string> = {};
+
+      if (password) {
+        headers['x-room-password'] = password;
+      }
+
+      const res = await fetch(url, { headers });
+
       if (res.status === 403) {
         // Return a specific object indicating password is required
         return { isLocked: true };
       }
-      
+
       if (res.status === 404) return null;
       if (!res.ok) throw new Error("Failed to fetch room");
-      
+
       return api.rooms.get.responses[200].parse(await res.json());
     },
     retry: false,
@@ -43,12 +49,12 @@ export function useCreateRoom() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      
+
       if (!res.ok) {
         if (res.status === 409) throw new Error("Slug already taken");
         throw new Error("Failed to create room");
       }
-      
+
       return api.rooms.create.responses[201].parse(await res.json());
     },
     // No invalidation needed as we redirect to the new slug usually
