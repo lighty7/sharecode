@@ -1,5 +1,5 @@
 
-import { rooms, type Room, type InsertRoom, type UpdateRoomRequest } from "@shared/schema";
+import { rooms, type Room, type InsertRoom, type UpdateRoomRequest } from "../shared/schema";
 import { db } from "./db.ts";
 import { eq } from "drizzle-orm";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
