@@ -29,7 +29,7 @@ export class DatabaseStorage implements IStorage {
   async updateRoom(slug: string, updates: Partial<InsertRoom>): Promise<Room | undefined> {
     const [room] = await db
       .update(rooms)
-      .set({ ...updates, updatedAt: new Date() }) // Manually update updatedAt if needed, though defaultNow() is for creation
+      .set({ ...updates })
       .where(eq(rooms.slug, slug))
       .returning();
     return room;

@@ -37,8 +37,8 @@ export default function Room() {
 
   // Derived State
   const debouncedContent = useDebounce(content, 1000);
-  const isLocked = (room as any)?.isLocked;
-  const isPrivate = room?.isPrivate || false;
+  const isLocked = room && 'isLocked' in room && room.isLocked;
+  const isPrivate = (room && 'isPrivate' in room && room.isPrivate) || false;
 
   // Mutations
   const createRoom = useCreateRoom();
@@ -61,7 +61,8 @@ export default function Room() {
     // If room is locked, we can't save. But if room is missing (null), we SHOULD save to create it.
     if (isLocked) return;
     // content === room.content check needs to handle room being null
-    if (content === (room?.content || "")) return;
+    const currentContent = (room && 'content' in room) ? room.content : "";
+    if (content === (currentContent || "")) return;
 
     const save = async () => {
       try {
