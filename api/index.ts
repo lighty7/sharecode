@@ -10,6 +10,11 @@ const httpServer = createServer(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Health check that doesn't rely on DB
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', env: process.env.NODE_ENV });
+});
+
 // Initialize routes
 // Note: registerRoutes is async, but Vercel expects a sync handler or valid promise
 // We need to keep the app instance "warm" or await it
