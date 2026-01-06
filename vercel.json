@@ -1,20 +1,19 @@
 {
+    "buildCommand": "npm run build",
+    "outputDirectory": "dist/public",
     "functions": {
         "api/index.ts": {
-            "includeFiles": "server/**"
+            "runtime": "nodejs20.x"
         }
     },
     "rewrites": [
         {
             "source": "/api/(.*)",
-            "destination": "/api/index.ts"
+            "destination": "/api"
         },
         {
             "source": "/(.*)",
-            "destination": "/index.html"
+            "destination": "/"
         }
-    ],
-    "buildCommand": "vite build",
-    "outputDirectory": "dist/public",
-    "framework": "vite"
+    ]
 }
