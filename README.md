@@ -71,6 +71,13 @@ Follow these steps to get the project running locally.
 - `shared/`: Shared types and schemas (Drizzle/Zod).
 - `drizzle.config.ts`: Database configuration.
 
+## 🔮 Future Roadmap
+
+- **⚡ True Real-Time Collaboration (WebSockets)**
+  Right now, the app uses a "last-write-wins" autosave strategy which can overwrite changes if two people edit simultaneously. We plan to implement WebSockets for:
+  - Live cursor tracking (see where others are typing).
+  - Operation Transformation (OT) or CRDTs for conflict-free editing.
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
