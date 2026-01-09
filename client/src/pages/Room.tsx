@@ -39,6 +39,7 @@ export default function Room() {
   const debouncedContent = useDebounce(content, 1000);
   const isLocked = room && 'isLocked' in room && room.isLocked;
   const isPrivate = (room && 'isPrivate' in room && room.isPrivate) || false;
+  const wordCount = content.split(/\s+/).filter(Boolean).length;
 
   // Mutations
   const createRoom = useCreateRoom();
@@ -150,6 +151,13 @@ export default function Room() {
         </div>
 
         <div className="h-4 w-[1px] bg-zinc-800 mx-2" />
+
+        <div className="flex items-center gap-2 px-2 py-1 rounded bg-zinc-900 border border-zinc-800 hidden sm:flex">
+          <span className="text-xs text-zinc-500 font-mono">Words:</span>
+          <span className="text-sm font-mono text-white">{wordCount}</span>
+        </div>
+
+        <div className="h-4 w-[1px] bg-zinc-800 mx-2 hidden sm:block" />
 
         <div className="flex items-center gap-4 text-xs font-mono text-zinc-500 min-w-[100px]">
           {isTyping || createRoom.isPending || updateRoom.isPending ? (
