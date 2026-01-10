@@ -199,6 +199,19 @@ export default function Room() {
           <span className="hidden sm:inline">Export</span>
         </Button>
 
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            navigator.clipboard.writeText(content);
+            toast({ title: "Copied", description: "Code copied to clipboard" });
+          }}
+          className="h-8 gap-2 text-zinc-400 hover:text-white"
+        >
+          <Copy className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Copy</span>
+        </Button>
+
         <div className="h-4 w-[1px] bg-zinc-800 mx-2" />
 
         <SettingsModal
