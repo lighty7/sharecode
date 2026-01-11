@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useLocation } from "wouter";
 import Editor, { OnMount } from "@monaco-editor/react";
 import { useRoom, useUpdateRoom, useCreateRoom } from "@/hooks/use-rooms";
+import { useEditorSettings } from "@/hooks/use-editor-settings";
 import { CommandBar } from "@/components/CommandBar";
 import { PasswordModal } from "@/components/PasswordModal";
 import { SettingsModal } from "@/components/SettingsModal";
+import { EditorSettingsModal } from "@/components/EditorSettingsModal";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Check, Share2, Copy, Download, Cloud } from "lucide-react";
@@ -45,6 +47,7 @@ export default function Room() {
   const createRoom = useCreateRoom();
   const updateRoom = useUpdateRoom();
   const { toast } = useToast();
+  const { settings, updateSetting } = useEditorSettings();
 
   // Initialize content from server
   useEffect(() => {
@@ -214,6 +217,11 @@ export default function Room() {
 
         <div className="h-4 w-[1px] bg-zinc-800 mx-2" />
 
+        <EditorSettingsModal
+          settings={settings}
+          onUpdate={updateSetting}
+        />
+
         <SettingsModal
           slug={slug}
           isPrivate={isPrivate}
@@ -229,8 +237,8 @@ export default function Room() {
           value={content}
           onChange={handleEditorChange}
           options={{
-            minimap: { enabled: false },
-            fontSize: 14,
+            minimap: { enabled: settings.minimap },
+            fontSize: settings.fontSize,
             fontFamily: "'JetBrains Mono', monospace",
             lineHeight: 24,
             padding: { top: 24, bottom: 24 },
@@ -239,7 +247,8 @@ export default function Room() {
             cursorBlinking: "smooth",
             cursorSmoothCaretAnimation: "on",
             renderLineHighlight: "all",
-            wordWrap: "on",
+            wordWrap: settings.wordWrap ? "on" : "off",
+            lineNumbers: settings.lineNumbers ? "on" : "off",
             scrollbar: {
               vertical: "visible",
               horizontal: "visible",
