@@ -1,4 +1,4 @@
-import 'tsconfig-paths/register';
+
 import 'dotenv/config';
 import express from 'express';
 import { registerRoutes } from '../server/routes.ts';
