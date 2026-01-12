@@ -1,8 +1,8 @@
 
-import 'dotenv/config';
-import express from 'express';
-import { registerRoutes } from '../server/routes.ts';
-import { createServer } from 'http';
+import "dotenv/config";
+import express from "express";
+import { registerRoutes } from "../server/routes";
+import { createServer } from "http";
 
 const app = express();
 const httpServer = createServer(app);
@@ -12,8 +12,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Health check that doesn't rely on DB
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', env: process.env.NODE_ENV });
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", env: process.env.NODE_ENV });
 });
 
 // Initialize routes
@@ -22,6 +22,6 @@ app.get('/api/health', (req, res) => {
 const setupPromise = registerRoutes(httpServer, app);
 
 export default async function handler(req: any, res: any) {
-    await setupPromise;
-    app(req, res);
+  await setupPromise;
+  app(req, res);
 }
