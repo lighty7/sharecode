@@ -68,8 +68,8 @@ async function buildAll() {
     entryPoints: ["server/routes.ts"],
     platform: "node",
     bundle: true,
-    format: "esm",
-    outfile: "dist/server/routes.mjs",
+    format: "cjs",
+    outfile: "dist/server/routes.cjs",
     external: externals,
     logLevel: "info",
   });

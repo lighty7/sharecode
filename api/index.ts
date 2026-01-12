@@ -9,8 +9,10 @@ import type { Express } from "express";
 async function loadRegisterRoutes(): Promise<
   (httpServer: ReturnType<typeof createServer>, app: Express) => Promise<any>
 > {
-  const mod = await import("../dist/server/routes.mjs");
-  return mod.registerRoutes;
+  // Note: this is a compiled CommonJS bundle; TypeScript will not have types for it.
+  // @ts-ignore - compiled file without type declarations
+  const mod = await import("../dist/server/routes.cjs");
+  return (mod as any).registerRoutes;
 }
 
 const app = express();
