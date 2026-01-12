@@ -122,6 +122,7 @@ export async function registerRoutes(
       const room = await storage.createRoom({
         slug,
         content: input.content || "",
+        language: input.language || "markdown",
         isPrivate,
         passwordHash,
         expiresAt,
@@ -164,6 +165,7 @@ export async function registerRoutes(
 
       const updates: any = {};
       if (input.content !== undefined) updates.content = input.content;
+      if (input.language !== undefined) updates.language = input.language;
 
       // Update lock settings
       if (input.lockPassword) {

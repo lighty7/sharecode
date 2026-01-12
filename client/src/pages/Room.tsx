@@ -7,6 +7,7 @@ import { CommandBar } from "@/components/CommandBar";
 import { PasswordModal } from "@/components/PasswordModal";
 import { SettingsModal } from "@/components/SettingsModal";
 import { EditorSettingsModal } from "@/components/EditorSettingsModal";
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Check, Share2, Copy, Download, Cloud } from "lucide-react";
@@ -34,6 +35,7 @@ export default function Room() {
 
   // Local State
   const [content, setContent] = useState("");
+  const [language, setLanguage] = useState("markdown");
   const [isTyping, setIsTyping] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
@@ -51,8 +53,9 @@ export default function Room() {
 
   // Initialize content from server
   useEffect(() => {
-    if (room && 'content' in room && room.content !== content && !isTyping) {
-      setContent(room.content || "");
+    if (room && 'content' in room && !isTyping) {
+      if (room.content !== content) setContent(room.content || "");
+      if ('language' in room && room.language !== language) setLanguage(room.language || "markdown");
       setLastSaved(new Date(room.lastAccessedAt || Date.now()));
     }
   }, [room]);
@@ -66,7 +69,9 @@ export default function Room() {
     if (isLocked) return;
     // content === room.content check needs to handle room being null
     const currentContent = (room && 'content' in room) ? room.content : "";
-    if (content === (currentContent || "")) return;
+    const currentLanguage = (room && 'language' in room) ? room.language : "markdown";
+
+    if (debouncedContent === (currentContent || "") && language === currentLanguage) return;
 
     const save = async () => {
       try {
@@ -75,6 +80,7 @@ export default function Room() {
           await createRoom.mutateAsync({
             slug,
             content: debouncedContent,
+            language,
             password: sessionPassword
           });
         } else {
@@ -82,6 +88,7 @@ export default function Room() {
           await updateRoom.mutateAsync({
             slug,
             content: debouncedContent,
+            language,
             password: sessionPassword
           });
         }
@@ -98,7 +105,8 @@ export default function Room() {
     };
 
     save();
-  }, [debouncedContent]);
+    save();
+  }, [debouncedContent, language]);
 
   const handleEditorChange = (value: string | undefined) => {
     if (value !== undefined) {
@@ -152,6 +160,13 @@ export default function Room() {
           <span className="text-xs text-zinc-500 font-mono">ID:</span>
           <span className="text-sm font-mono text-white">{slug}</span>
         </div>
+
+        <div className="h-4 w-[1px] bg-zinc-800 mx-2" />
+
+        <LanguageSelector value={language} onChange={(val) => {
+          setLanguage(val);
+          // Trigger immediate save or let effect handle it
+        }} />
 
         <div className="h-4 w-[1px] bg-zinc-800 mx-2" />
 
@@ -232,7 +247,7 @@ export default function Room() {
       <div className="flex-1 relative">
         <Editor
           height="100%"
-          defaultLanguage="markdown"
+          language={language}
           theme="vs-dark"
           value={content}
           onChange={handleEditorChange}

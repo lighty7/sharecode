@@ -12,6 +12,7 @@ export const rooms = pgTable("rooms", {
   createdAt: timestamp("created_at").defaultNow(),
   lastAccessedAt: timestamp("last_accessed_at").defaultNow(),
   createdIp: text("created_ip"), // Basic auditing
+  language: text("language").default("markdown"),
 });
 
 export const insertRoomSchema = createInsertSchema(rooms).omit({
@@ -26,12 +27,14 @@ export type InsertRoom = z.infer<typeof insertRoomSchema>;
 export type CreateRoomRequest = {
   slug?: string;
   content?: string;
+  language?: string;
   password?: string;
   expiresIn?: number; // hours
 };
 
 export type UpdateRoomRequest = {
   content?: string;
+  language?: string;
   password?: string; // To verify if private
   newPassword?: string; // To set/change password
   isPrivate?: boolean;

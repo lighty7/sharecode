@@ -35,6 +35,7 @@ export const api = {
       input: z.object({
         slug: z.string().optional(),
         content: z.string().optional(),
+        language: z.string().optional(),
         password: z.string().optional(),
         expiresIn: z.number().optional(), // hours
       }),
@@ -49,6 +50,7 @@ export const api = {
       path: '/api/rooms/:slug',
       input: z.object({
         content: z.string().optional(),
+        language: z.string().optional(),
         password: z.string().optional(), // For verification
         lockPassword: z.string().optional(), // For setting a new lock
         isPrivate: z.boolean().optional(),
