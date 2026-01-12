@@ -46,6 +46,7 @@ async function buildAll() {
   ];
   const externals = allDeps.filter((dep) => !allowlist.includes(dep));
 
+  // Full server bundle (used for non-Vercel environments)
   await esbuild({
     entryPoints: ["server/index.ts"],
     platform: "node",
@@ -56,6 +57,19 @@ async function buildAll() {
       "process.env.NODE_ENV": '"production"',
     },
     minify: true,
+    external: externals,
+    logLevel: "info",
+  });
+
+  // Lightweight routes bundle for Vercel serverless function
+  // This compiles `server/routes.ts` and its dependencies to JS so that
+  // `api/index.ts` can import it without relying on raw `.ts` files.
+  await esbuild({
+    entryPoints: ["server/routes.ts"],
+    platform: "node",
+    bundle: true,
+    format: "esm",
+    outfile: "dist/server/routes.mjs",
     external: externals,
     logLevel: "info",
   });
