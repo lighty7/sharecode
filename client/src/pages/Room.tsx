@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import { useParams, useLocation } from "wouter";
+import { useState, useEffect, useRef } from "react";
+import { useParams } from "wouter";
 import Editor, { OnMount } from "@monaco-editor/react";
 import { useRoom, useUpdateRoom, useCreateRoom } from "@/hooks/use-rooms";
 import { useEditorSettings } from "@/hooks/use-editor-settings";
@@ -10,8 +10,8 @@ import { EditorSettingsModal } from "@/components/EditorSettingsModal";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Check, Share2, Copy, Download, Cloud } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Loader2, Share2, Copy, Download, Cloud, Wand2 } from "lucide-react";
+
 
 // Debounce helper
 function useDebounce<T>(value: T, delay: number): T {
@@ -29,9 +29,9 @@ export default function Room() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug || "";
   const [sessionPassword, setSessionPassword] = useState<string | undefined>();
-
+  const editorRef = useRef<any>(null);
   // Data Fetching
-  const { data: room, isLoading, error } = useRoom(slug, sessionPassword);
+  const { data: room, isLoading } = useRoom(slug, sessionPassword);
 
   // Local State
   const [content, setContent] = useState("");
@@ -115,6 +115,14 @@ export default function Room() {
     }
   };
 
+  const handleEditorDidMount: OnMount = (editor) => {
+    editorRef.current = editor;
+  };
+
+  const handleFormat = () => {
+    editorRef.current?.trigger('anySource', 'editor.action.formatDocument', {});
+  };
+
   const copyUrl = () => {
     navigator.clipboard.writeText(window.location.href);
     toast({ title: "Copied", description: "URL copied to clipboard" });
@@ -145,7 +153,6 @@ export default function Room() {
 
   // Handle 404 - Should be rare as we create on first save, 
   // but if we are viewing a non-existent slug, treat as empty new room
-  const isNew = !room || !('createdAt' in room);
 
   return (
     <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
@@ -230,6 +237,17 @@ export default function Room() {
           <span className="hidden sm:inline">Copy</span>
         </Button>
 
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleFormat}
+          className="h-8 gap-2 text-zinc-400 hover:text-white"
+          title="Format Code"
+        >
+          <Wand2 className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Format</span>
+        </Button>
+
         <div className="h-4 w-[1px] bg-zinc-800 mx-2" />
 
         <EditorSettingsModal
@@ -251,6 +269,7 @@ export default function Room() {
           theme="vs-dark"
           value={content}
           onChange={handleEditorChange}
+          onMount={handleEditorDidMount}
           options={{
             minimap: { enabled: settings.minimap },
             fontSize: settings.fontSize,
