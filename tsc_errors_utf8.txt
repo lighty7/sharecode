@@ -1,0 +1,13 @@
+﻿client/src/components/SettingsModal.tsx(6,1): error TS6133: 'Switch' is declared but its value is never read.
+client/src/hooks/use-rooms.ts(44,9): error TS6133: 'queryClient' is declared but its value is never read.
+client/src/pages/Room.tsx(1,31): error TS6133: 'useCallback' is declared but its value is never read.
+client/src/pages/Room.tsx(2,21): error TS6133: 'useLocation' is declared but its value is never read.
+client/src/pages/Room.tsx(13,19): error TS6133: 'Check' is declared but its value is never read.
+client/src/pages/Room.tsx(14,1): error TS6133: 'cn' is declared but its value is never read.
+client/src/pages/Room.tsx(34,34): error TS6133: 'error' is declared but its value is never read.
+client/src/pages/Room.tsx(118,50): error TS6133: 'monaco' is declared but its value is never read.
+client/src/pages/Room.tsx(156,9): error TS6133: 'isNew' is declared but its value is never read.
+server/routes.ts(5,15): error TS6133: 'errorSchemas' is declared but its value is never read.
+server/routes.ts(7,1): error TS6133: 'randomBytes' is declared but its value is never read.
+server/storage.ts(2,50): error TS6133: 'UpdateRoomRequest' is declared but its value is never read.
+shared/routes.ts(3,10): error TS6133: 'insertRoomSchema' is declared but its value is never read.
