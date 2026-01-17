@@ -44,6 +44,7 @@ export default function Room() {
   const isLocked = room && 'isLocked' in room && room.isLocked;
   const isPrivate = (room && 'isPrivate' in room && room.isPrivate) || false;
   const wordCount = content.split(/\s+/).filter(Boolean).length;
+  const lineCount = content.split('\n').length;
 
   // Mutations
   const createRoom = useCreateRoom();
@@ -187,6 +188,13 @@ export default function Room() {
         <div className="flex items-center gap-2 px-2 py-1 rounded bg-zinc-900 border border-zinc-800 hidden sm:flex">
           <span className="text-xs text-zinc-500 font-mono">Chars:</span>
           <span className="text-sm font-mono text-white">{content.length}</span>
+        </div>
+
+        <div className="h-4 w-[1px] bg-zinc-800 mx-2 hidden sm:block" />
+
+        <div className="flex items-center gap-2 px-2 py-1 rounded bg-zinc-900 border border-zinc-800 hidden sm:flex">
+          <span className="text-xs text-zinc-500 font-mono">Lines:</span>
+          <span className="text-sm font-mono text-white">{lineCount}</span>
         </div>
 
         <div className="h-4 w-[1px] bg-zinc-800 mx-2 hidden sm:block" />
